@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block title %}Trang chính - Phát hiện tin giả/thật{% endblock %}
+
+{% block main_class %}container py-5{% endblock %}
+
+{% block content %}
+<div class="row mb-5">
+    <div class="col-12">
+        <h1 class="display-4 mb-2">
+            <i class="bi bi-shield-check text-danger"></i> Phát hiện tin giả/thật
+        </h1>
+        <p class="lead text-muted">Hệ thống phân loại tin tức sử dụng AI & Machine Learning</p>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row gap-3 mb-5">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted mb-1">Tổng bài viết</p>
+                        <h3 class="mb-0">{{ total_articles }}</h3>
+                    </div>
+                    <div class="bg-primary bg-opacity-10 p-3 rounded">
+                        <i class="bi bi-file-earmark-text text-primary" style="font-size: 1.5rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted mb-1">Tin giả</p>
+                        <h3 class="mb-0 text-danger">{{ fake_count }}</h3>
+                    </div>
+                    <div class="bg-danger bg-opacity-10 p-3 rounded">
+                        <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 1.5rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted mb-1">Tin thật</p>
+                        <h3 class="mb-0 text-success">{{ real_count }}</h3>
+                    </div>
+                    <div class="bg-success bg-opacity-10 p-3 rounded">
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 1.5rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features -->
+<div class="row mb-5">
+    <div class="col-12">
+        <h2 class="mb-4">Tính năng chính</h2>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-sliders text-info"></i> Dự đoán chi tiết</h5>
+                <p class="card-text">Cung cấp metadata (nhu cầu, retweet, like...) để có kết quả chính xác hơn</p>
+                <a href="{% url 'detector:predict' %}" class="btn btn-outline-primary btn-sm">
+                    Bắt đầu <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-clock-history text-secondary"></i> Lịch sử kiểm tra</h5>
+                <p class="card-text">Xem all những bài viết đã kiểm tra và kết quả dự đoán</p>
+                <a href="{% url 'detector:history' %}" class="btn btn-outline-primary btn-sm">
+                    Xem thêm <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-pie-chart text-success"></i> Thống kê</h5>
+                <p class="card-text">Xem các chỉ số thống kê và phân tích dữ liệu chi tiết</p>
+                <a href="{% url 'detector:statistics' %}" class="btn btn-outline-primary btn-sm">
+                    Xem thêm <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Technologies -->
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">Công nghệ sử dụng</h2>
+    </div>
+</div>
+<div class="row gap-2 mb-5">
+    <div class="col-md-3 col-6">
+        <div class="bg-light p-3 rounded text-center">
+            <h6 class="mb-1">TF-IDF</h6>
+            <p class="small text-muted mb-0">Text Feature Extraction</p>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="bg-light p-3 rounded text-center">
+            <h6 class="mb-1">RoBERTa</h6>
+            <p class="small text-muted mb-0">Deep Learning Embedding</p>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="bg-light p-3 rounded text-center">
+            <h6 class="mb-1">XGBoost</h6>
+            <p class="small text-muted mb-0">Gradient Boosting</p>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="bg-light p-3 rounded text-center">
+            <h6 class="mb-1">Django</h6>
+            <p class="small text-muted mb-0">Web Framework</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

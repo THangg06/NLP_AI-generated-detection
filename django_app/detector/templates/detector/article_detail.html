@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}Chi tiết bài viết - Phát hiện tin giả/thật{% endblock %}
+
+{% block main_class %}container py-5{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Navigation -->
+        <div class="mb-4">
+            <a href="{% url 'detector:history' %}" class="text-decoration-none">
+                <i class="bi bi-arrow-left"></i> Quay lại
+            </a>
+        </div>
+
+        <!-- Article -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                <div class="mb-3">
+                    {% if article.prediction == 0 %}
+                    <span class="badge bg-danger">
+                        <i class="bi bi-exclamation-triangle"></i> {{ article.get_prediction_label }}
+                    </span>
+                    {% else %}
+                    <span class="badge bg-success">
+                        <i class="bi bi-check-circle"></i> {{ article.get_prediction_label }}
+                    </span>
+                    {% endif %}
+                    <small class="text-muted ms-2">{{ article.created_at|date:"d/m/Y H:i" }}</small>
+                </div>
+
+                <h3 class="mb-4">{{ article.title }}</h3>
+
+                <!-- Prediction Details -->
+                <div class="row gap-3 mb-4">
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Xác suất tin giả</h6>
+                        <h4 class="text-danger">{{ article.fake_probability|floatformat:2 }}%</h4>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-danger"
+                                style="width: {{ article.fake_probability|floatformat:0 }}%"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Xác suất tin thật</h6>
+                        <h4 class="text-success">{{ article.real_probability|floatformat:2 }}%</h4>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-success"
+                                style="width: {{ article.real_probability|floatformat:0 }}%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <!-- Metadata -->
+                <h5 class="mb-3">Metadata</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Số lượt tweet</small>
+                            <strong>{{ article.tweet_count }}</strong>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Số lượt retweet</small>
+                            <strong>{{ article.retweet_count }}</strong>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Số lượt like</small>
+                            <strong>{{ article.like_count }}</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Số lượt reply</small>
+                            <strong>{{ article.reply_count }}</strong>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Người dùng xác minh</small>
+                            <strong>
+                                {% if article.user_verified %}
+                                <span class="badge bg-success">Có</span>
+                                {% else %}
+                                <span class="badge bg-secondary">Không</span>
+                                {% endif %}
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History -->
+        {% if history %}
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h5 class="mb-3">Lịch sử phân tích</h5>
+                <div class="timeline">
+                    {% for record in history %}
+                    <div class="d-flex gap-3 mb-3">
+                        <div class="flex-shrink-0">
+                            <i class="bi bi-check-circle text-success"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">{{ record.prediction_date|date:"d/m/Y H:i:s" }}</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

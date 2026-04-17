@@ -1,0 +1,7 @@
+{
+  "rumor_threshold": 0.5,
+  "best_iteration": 448,
+  "optimized_on": "validation",
+  "macro_f1": 0.7765052575179157,
+  "balanced_accuracy": 0.7752883762200533
+}

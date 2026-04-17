@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block title %}Thống kê - Phát hiện tin giả/thật{% endblock %}
+
+{% block main_class %}container py-5{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="mb-5">
+            <h1 class="mb-2"><i class="bi bi-pie-chart text-success"></i> Thống kê</h1>
+            <p class="text-muted">Phân tích và các chỉ số hiệu suất hệ thống</p>
+        </div>
+
+        <!-- Main Statistics -->
+        <div class="row gap-3 mb-5">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <p class="text-muted mb-1">Tổng bài viết</p>
+                                <h3 class="mb-0">{{ total_articles }}</h3>
+                            </div>
+                            <div class="bg-primary bg-opacity-10 p-3 rounded">
+                                <i class="bi bi-file-earmark-text text-primary" style="font-size: 1.5rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <p class="text-muted mb-1">Tin giả</p>
+                                <h3 class="mb-0 text-danger">{{ fake_count }}</h3>
+                                <small class="text-muted">{{ fake_percentage|floatformat:1 }}%</small>
+                            </div>
+                            <div class="bg-danger bg-opacity-10 p-3 rounded">
+                                <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 1.5rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <p class="text-muted mb-1">Tin thật</p>
+                                <h3 class="mb-0 text-success">{{ real_count }}</h3>
+                                <small class="text-muted">{{ real_percentage|floatformat:1 }}%</small>
+                            </div>
+                            <div class="bg-success bg-opacity-10 p-3 rounded">
+                                <i class="bi bi-check-circle-fill text-success" style="font-size: 1.5rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Confidence Statistics -->
+        <div class="row gap-3">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h5 class="card-title mb-4">Độ tin cây trung bình</h5>
+
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <small class="text-muted">Tin giả</small>
+                                <strong class="text-danger">{{ fake_avg_confidence }}%</strong>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-danger" style="width: {{ fake_avg_confidence }}%"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <small class="text-muted">Tin thật</small>
+                                <strong class="text-success">{{ real_avg_confidence }}%</strong>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-success" style="width: {{ real_avg_confidence }}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h5 class="card-title mb-4">Tỷ lệ phân loại</h5>
+
+                        {% if total_articles > 0 %}
+                        <div style="position: relative; width: 300px; height: 200px; margin: 0 auto;">
+                            <canvas id="pieChart"></canvas>
+                        </div>
+                        {% else %}
+                        <p class="text-center text-muted py-4">
+                            <i class="bi bi-inbox"></i> Chưa có dữ liệu để hiển thị
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Box -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <h6 class="alert-heading">
+                        <i class="bi bi-info-circle"></i> Thông tin
+                    </h6>
+                    <p class="mb-0">
+                        Hệ thống đang phân tích dựa trên kết hợp TF-IDF, RoBERTa embeddings và metadata từ mạng xã hội.
+                        Độ tin cây trung bình cho thấy sự tự tin của mô hình trong dự đoán.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+    {% if total_articles > 0 %}
+    const ctx = document.getElementById('pieChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Tin giả', 'Tin thật'],
+            datasets: [{
+                data: [{{ fake_count }}, {{ real_count }}],
+        backgroundColor: [
+            'rgba(220, 53, 69, 0.8)',
+            'rgba(40, 167, 69, 0.8)'
+        ],
+        borderColor: [
+            'rgba(220, 53, 69, 1)',
+            'rgba(40, 167, 69, 1)'
+        ],
+        borderWidth: 2
+    }]
+        },
+        options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+    });
+    {% endif %}
+</script>
+{% endblock %}
